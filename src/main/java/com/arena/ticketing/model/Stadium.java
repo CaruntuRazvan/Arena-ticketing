@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "stadiums")
@@ -24,5 +25,6 @@ public class Stadium {
 
     // Relația cu Sectoarele
     @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL)
+    @JsonIgnore // deserialize to prevent circular reference
     private List<Sector> sectors;
 }

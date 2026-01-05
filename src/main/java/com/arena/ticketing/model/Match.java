@@ -20,6 +20,9 @@ public class Match {
     @Future(message = "Match date must be in the future")
     private LocalDateTime matchDate;
 
+    @Enumerated(EnumType.STRING)
+    private MatchStatus status = MatchStatus.SCHEDULED;
+
     @ManyToOne
     @JoinColumn(name = "stadium_id", nullable = false)
     private Stadium stadium;

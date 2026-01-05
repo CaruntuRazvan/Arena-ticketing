@@ -7,7 +7,9 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tickets")
+@Table(name = "tickets", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"match_id", "seat_id"})
+})
 @Getter @Setter @NoArgsConstructor
 public class Ticket {
 
@@ -16,6 +18,8 @@ public class Ticket {
     private Long id;
 
     private String ticketCode = UUID.randomUUID().toString();
+
+    private java.time.LocalDateTime purchaseDate;
 
     @ManyToOne
     @JoinColumn(name = "match_id")

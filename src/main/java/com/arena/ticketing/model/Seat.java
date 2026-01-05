@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "seats")
 @Getter @Setter @NoArgsConstructor
@@ -20,6 +21,7 @@ public class Seat {
 
     @ManyToOne
     @JoinColumn(name = "sector_id", nullable = false)
+    @JsonIgnore // deserialize to prevent circular reference
     private Sector sector;
 }
 

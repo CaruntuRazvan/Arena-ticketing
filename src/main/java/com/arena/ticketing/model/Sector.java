@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "sectors")
 @Getter @Setter @NoArgsConstructor
@@ -18,6 +19,7 @@ public class Sector {
 
     @ManyToOne
     @JoinColumn(name = "stadium_id", nullable = false)
+    @JsonIgnore // deserialize to prevent circular reference
     private Stadium stadium;
 
     @OneToMany(mappedBy = "sector", cascade = CascadeType.ALL)
