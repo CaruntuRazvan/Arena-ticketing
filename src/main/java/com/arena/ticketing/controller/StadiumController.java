@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import com.arena.ticketing.dto.SectorRequestDTO;
 import com.arena.ticketing.model.Sector;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -26,11 +27,11 @@ public class StadiumController {
 
     // Endpoint pentru a crea un stadion nou
     @PostMapping
-    public ResponseEntity<StadiumDTO> createStadium(@RequestBody StadiumDTO stadiumDTO) {
+    public ResponseEntity<StadiumDTO> createStadium(@Valid @RequestBody StadiumDTO stadiumDTO) {
         return ResponseEntity.ok(stadiumService.createStadium(stadiumDTO));
     }
     @PostMapping("/sectors")
-    public ResponseEntity<Sector> addSector(@RequestBody SectorRequestDTO dto) {
+    public ResponseEntity<Sector> addSector(@Valid @RequestBody SectorRequestDTO dto) {
         return ResponseEntity.ok(stadiumService.addSector(dto));
     }
 }

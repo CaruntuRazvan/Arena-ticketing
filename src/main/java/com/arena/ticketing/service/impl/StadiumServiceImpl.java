@@ -10,6 +10,7 @@ import com.arena.ticketing.dto.SectorRequestDTO;
 import com.arena.ticketing.model.Sector;
 import com.arena.ticketing.model.Seat;
 import org.springframework.stereotype.Service;
+import com.arena.ticketing.exception.TicketException;
 import java.util.stream.Collectors;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +51,7 @@ public class StadiumServiceImpl implements StadiumService {
     @Transactional
     public Sector addSector(SectorRequestDTO dto) {
         Stadium stadium = stadiumRepository.findById(dto.getStadiumId())
-                .orElseThrow(() -> new RuntimeException("Stadionul nu a fost găsit!"));
+                .orElseThrow(() -> new TicketException("Stadionul nu a fost găsit!"));
 
         Sector sector = new Sector();
         sector.setName(dto.getName());

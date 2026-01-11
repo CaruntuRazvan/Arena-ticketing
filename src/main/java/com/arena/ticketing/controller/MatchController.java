@@ -5,6 +5,11 @@ import com.arena.ticketing.service.MatchService;
 import com.arena.ticketing.model.MatchSectorPrice;
 import com.arena.ticketing.dto.MatchRequestDTO;
 import com.arena.ticketing.dto.PriceRequestDTO;
+import com.arena.ticketing.dto.MatchStatsDTO;
+import com.arena.ticketing.dto.SectorAvailabilityDTO;
+
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,13 +37,24 @@ public class MatchController {
     }
 
     @PostMapping
-    public ResponseEntity<Match> createMatch(@RequestBody MatchRequestDTO dto) {
+    public ResponseEntity<Match> createMatch(@Valid @RequestBody MatchRequestDTO dto) {
         return ResponseEntity.ok(matchService.createMatch(dto));
     }
 
     @PostMapping("/prices")
-    public ResponseEntity<String> setPrices(@RequestBody List<PriceRequestDTO> prices) {
+    public ResponseEntity<String> setPrices(@Valid @RequestBody List<PriceRequestDTO> prices) {
         matchService.setMatchPrices(prices);
         return ResponseEntity.ok("Prețurile au fost setate cu succes!");
+    }
+
+    @GetMapping("/{id}/statistics")
+    @Operation(summary = "Statistici ocupare meci", description = "Returnează procentul de ocupare total și pe fiecare sector în parte.")
+    public ResponseEntity<MatchStatsDTO> getMatchStats(@PathVariable Long id) {
+        return ResponseEntity.ok(matchService.getMatchStatistics(id));
+    }
+
+    @GetMapping("/{matchId}/sectors-availability")
+    public ResponseEntity<List<SectorAvailabilityDTO>> getSectorsAvailability(@PathVariable Long matchId) {
+        return ResponseEntity.ok(matchService.getSectorsAvailabilityForMatch(matchId));
     }
 }

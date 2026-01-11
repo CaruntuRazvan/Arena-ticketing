@@ -10,4 +10,6 @@ public class SeatStatusDTO {
     private int rowNumber;
     private int seatNumber;
     private boolean isAvailable; // Aici e cheia!
+    private double price;
+
 }

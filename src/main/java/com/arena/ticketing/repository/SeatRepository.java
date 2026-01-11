@@ -7,4 +7,10 @@ import java.util.List;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findBySectorId(Long sectorId);
+
+    long countBySectorStadiumId(Long id);
+
+    long countBySectorId(Long id);
+
+    boolean existsBySectorId(Long sectorId);
 }

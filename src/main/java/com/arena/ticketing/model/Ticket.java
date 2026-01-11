@@ -21,6 +21,8 @@ public class Ticket {
 
     private java.time.LocalDateTime purchaseDate;
 
+    private boolean used = false;
+
     @ManyToOne
     @JoinColumn(name = "match_id")
     private Match match;

@@ -24,4 +24,4 @@ Proiectul este structurat pe straturi (Layered Architecture):
     * Validări de preț bazate pe configurația specifică Meci-Sector.
 
 ## Structura Bazei de Date (ERD)
-<img src="images/Arena-ticketing-db.png" width="100%" alt="ERD Arena Ticketing System"/>
+![Diagrama ERD](images/Arena-ticketing-db.png)
