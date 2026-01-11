@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 
 @Service
@@ -143,6 +141,21 @@ public class MatchServiceImpl implements MatchService {
                     price
             );
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void updateMatchStatus(Long matchId, MatchStatus newStatus) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new TicketException("Meciul nu a fost găsit!"));
+
+        // Verificăm dacă nu cumva meciul este deja anulat
+        if (match.getStatus() == MatchStatus.CANCELLED) {
+            throw new TicketException("Nu poți schimba statusul unui meci anulat!");
+        }
+
+        match.setStatus(newStatus);
+        matchRepository.save(match);
     }
 
     // rulare zilnic la ora 00:00

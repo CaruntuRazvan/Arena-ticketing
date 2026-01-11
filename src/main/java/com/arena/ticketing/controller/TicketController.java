@@ -1,5 +1,6 @@
 package com.arena.ticketing.controller;
 
+import com.arena.ticketing.dto.TicketListDTO;
 import com.arena.ticketing.dto.TicketRequestDTO;
 import com.arena.ticketing.model.Ticket;
 import com.arena.ticketing.service.TicketService;
@@ -31,7 +32,7 @@ public class TicketController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Ticket>> getMyTickets(@PathVariable Long userId) {
+    public ResponseEntity<List<TicketListDTO>> getMyTickets(@PathVariable Long userId) {
         // Corect: Controller -> Service -> Repository
         return ResponseEntity.ok(ticketService.getTicketsByUserId(userId));
     }

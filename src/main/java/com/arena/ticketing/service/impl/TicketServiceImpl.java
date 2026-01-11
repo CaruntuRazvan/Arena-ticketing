@@ -1,5 +1,6 @@
 package com.arena.ticketing.service.impl;
 
+import com.arena.ticketing.dto.TicketListDTO;
 import com.arena.ticketing.dto.TicketRequestDTO;
 import com.arena.ticketing.exception.TicketException;
 import com.arena.ticketing.model.*;
@@ -27,15 +28,22 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public List<Ticket> buyTickets(TicketRequestDTO request) {
-        // 1. Validare cantitate (Regulă nouă)
         if (request.getSeatIds() == null || request.getSeatIds().isEmpty()) {
             throw new TicketException("Trebuie să selectați cel puțin un loc!");
         }
-        if (request.getSeatIds().size() > 5) {
+        int MAX_PER_TRANSACTION = 5;
+        int MAX_TOTAL_PER_USER = 10;
+
+        int requestedCount = request.getSeatIds().size();
+        if (requestedCount > MAX_PER_TRANSACTION) {
             throw new TicketException("Puteți cumpăra maxim 5 bilete per tranzacție!");
         }
 
-        // 2. Validăm entitățile generale (o singură dată)
+        long alreadyOwned = ticketRepository.countByMatchIdAndUserId(request.getMatchId(), request.getUserId());
+        if (alreadyOwned + requestedCount > MAX_TOTAL_PER_USER) {
+            throw new TicketException("Limita depasita! Ai deja " + alreadyOwned +
+                    " bilete pentru acest meci. Poti deține maxim " + MAX_TOTAL_PER_USER + " in total.");
+        }
         Match match = matchRepository.findById(request.getMatchId())
                 .orElseThrow(() -> new TicketException("Meciul nu a fost găsit!"));
 
@@ -93,12 +101,23 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.findByMatchId(matchId);
     }
     @Override
-    public List<Ticket> getTicketsByUserId(Long userId) {
-        // Aici am putea adăuga logică: ex. să verificăm dacă user-ul există
+    public List<TicketListDTO> getTicketsByUserId(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new TicketException("Utilizatorul nu a fost găsit");
         }
-        return ticketRepository.findByUserId(userId);
+
+        List<Ticket> tickets = ticketRepository.findByUserId(userId);
+
+        return tickets.stream().map(t -> new TicketListDTO(
+                t.getId(),
+                t.getTicketCode(),
+                t.getMatch().getOpponentName(),
+                t.getSeat().getSector().getName(), // Aici tragem sectorul
+                t.getSeat().getRowNumber(),
+                t.getSeat().getSeatNumber(),
+                t.getFinalPrice(),
+                t.isUsed()
+        )).toList();
     }
 
     @Override

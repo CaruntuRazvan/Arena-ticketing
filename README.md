@@ -18,10 +18,21 @@ Proiectul este structurat pe straturi (Layered Architecture):
 
 ## Funcționalități Implementate
 * **Gestiune Infrastructură:** Configurare stadioane, sectoare și locuri.
-
+* **Ciclu de Viață Meci: Gestionarea statusurilor meciurilor (Scheduled, Finished, Cancelled).
+* **Pricing Dinamic: Configurare prețuri diferențiate per sector pentru fiecare meci în parte
 * **Logica de Ticketing:**
     * Achiziție bilete cu verificarea automată a disponibilității locului.
     * Validări de preț bazate pe configurația specifică Meci-Sector.
-
+    * Achiziție Atomică: Suport pentru cumpărarea a până la 5 bilete într-o singură tranzacție
+* **Politici de Securitate și Anti-Scalping:**
+    * Limitare număr maxim de bilete per utilizator pentru un meci (configurabil).
+    * Validare UUID: Generarea de coduri unice universale pentru fiecare bilet.
+    * Control Acces (Check-in): Validarea biletelor la poarta stadionului (stare: UNUSED → USED) pentru a preveni refolosirea acestora.
+* **Raportare și Monitorizare:**
+    * Scheduled Tasks (Cron Jobs): Actualizarea automată a statusului meciurilor trecute în FINISHED zilnic la miezul nopții.
+    * Reporting Admin: Calculul veniturilor totale și vizualizarea statisticilor de vânzare per eveniment.
 ## Structura Bazei de Date (ERD)
 ![Diagrama ERD](images/Arena-ticketing-db.png)
+
+## Ghid de Utilizare API (Swagger)
+După pornirea aplicației, documentația interactivă poate fi accesată la: http://localhost:8080/swagger-ui.html

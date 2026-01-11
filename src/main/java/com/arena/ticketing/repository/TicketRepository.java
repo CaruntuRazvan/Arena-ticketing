@@ -19,4 +19,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     // În TicketRepository.java
     Optional<Ticket> findByTicketCode(String ticketCode);
+    long countByMatchIdAndUserId(Long matchId, Long userId);
 }

@@ -1,6 +1,7 @@
 package com.arena.ticketing.controller;
 
 import com.arena.ticketing.model.Match;
+import com.arena.ticketing.model.MatchStatus;
 import com.arena.ticketing.service.MatchService;
 import com.arena.ticketing.model.MatchSectorPrice;
 import com.arena.ticketing.dto.MatchRequestDTO;
@@ -56,5 +57,15 @@ public class MatchController {
     @GetMapping("/{matchId}/sectors-availability")
     public ResponseEntity<List<SectorAvailabilityDTO>> getSectorsAvailability(@PathVariable Long matchId) {
         return ResponseEntity.ok(matchService.getSectorsAvailabilityForMatch(matchId));
+    }
+
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Schimbă statusul unui meci", description = "Admin-ul poate anula sau finaliza un meci.")
+    public ResponseEntity<String> updateStatus(
+            @PathVariable Long id,
+            @RequestParam MatchStatus status) {
+
+        matchService.updateMatchStatus(id, status);
+        return ResponseEntity.ok("Statusul meciului a fost actualizat în " + status);
     }
 }

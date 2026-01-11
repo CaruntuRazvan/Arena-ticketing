@@ -1,5 +1,6 @@
 package com.arena.ticketing.service;
 
+import com.arena.ticketing.dto.TicketListDTO;
 import com.arena.ticketing.dto.TicketRequestDTO;
 import com.arena.ticketing.model.Ticket;
 import org.springframework.transaction.annotation.Isolation;
@@ -15,7 +16,7 @@ public interface TicketService {
 
     List<Ticket> getAllTickets();
     List<Ticket> getTicketsByMatch(Long matchId);
-    List<Ticket> getTicketsByUserId(Long userId);
+    List<TicketListDTO> getTicketsByUserId(Long userId);
     Double getTotalRevenueByMatch(Long matchId);
 
     void validateTicket(String ticketCode);

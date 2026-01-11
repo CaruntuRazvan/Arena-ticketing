@@ -5,6 +5,9 @@ import com.arena.ticketing.dto.SectorAvailabilityDTO;
 import com.arena.ticketing.model.Match;
 import com.arena.ticketing.dto.MatchRequestDTO;
 import com.arena.ticketing.dto.PriceRequestDTO;
+import com.arena.ticketing.model.MatchStatus;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 public interface MatchService {
@@ -17,4 +20,5 @@ public interface MatchService {
     MatchStatsDTO getMatchStatistics(Long id);
 
     List<SectorAvailabilityDTO> getSectorsAvailabilityForMatch(Long matchId);
+    void updateMatchStatus(Long matchId, MatchStatus newStatus);
 }
