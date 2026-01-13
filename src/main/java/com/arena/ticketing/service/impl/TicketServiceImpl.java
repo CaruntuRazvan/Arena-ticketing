@@ -1,5 +1,6 @@
 package com.arena.ticketing.service.impl;
 
+import com.arena.ticketing.dto.MatchRevenueReportDTO;
 import com.arena.ticketing.dto.TicketListDTO;
 import com.arena.ticketing.dto.TicketRequestDTO;
 import com.arena.ticketing.exception.TicketException;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Isolation;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -29,14 +31,14 @@ public class TicketServiceImpl implements TicketService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public List<Ticket> buyTickets(TicketRequestDTO request) {
         if (request.getSeatIds() == null || request.getSeatIds().isEmpty()) {
-            throw new TicketException("Trebuie să selectați cel puțin un loc!");
+            throw new TicketException("Trebuie sa selectati cel putin un loc!");
         }
         int MAX_PER_TRANSACTION = 5;
         int MAX_TOTAL_PER_USER = 10;
 
         int requestedCount = request.getSeatIds().size();
         if (requestedCount > MAX_PER_TRANSACTION) {
-            throw new TicketException("Puteți cumpăra maxim 5 bilete per tranzacție!");
+            throw new TicketException("Puteti cumpara maxim 5 bilete per tranzactie!");
         }
 
         long alreadyOwned = ticketRepository.countByMatchIdAndUserId(request.getMatchId(), request.getUserId());
@@ -45,12 +47,11 @@ public class TicketServiceImpl implements TicketService {
                     " bilete pentru acest meci. Poti deține maxim " + MAX_TOTAL_PER_USER + " in total.");
         }
         Match match = matchRepository.findById(request.getMatchId())
-                .orElseThrow(() -> new TicketException("Meciul nu a fost găsit!"));
+                .orElseThrow(() -> new TicketException("Meciul nu a fost gasit!"));
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new TicketException("Utilizatorul nu a fost găsit!"));
+                .orElseThrow(() -> new TicketException("Utilizatorul nu a fost gasit!"));
 
-        // Validări status meci (rămân la fel)
         if (match.getStatus() == MatchStatus.CANCELLED) throw new TicketException("Meciul a fost anulat!");
         if (match.getStatus() == MatchStatus.FINISHED) throw new TicketException("Meciul s-a terminat!");
         if (match.getMatchDate().isBefore(LocalDateTime.now())) throw new TicketException("Meciul a trecut deja!");
@@ -66,13 +67,13 @@ public class TicketServiceImpl implements TicketService {
             }
 
             Seat seat = seatRepository.findById(seatId)
-                    .orElseThrow(() -> new TicketException("Locul " + seatId + " nu a fost găsit!"));
+                    .orElseThrow(() -> new TicketException("Locul " + seatId + " nu a fost gasit!"));
 
             // Căutăm prețul pentru sectorul acestui scaun
             MatchSectorPrice priceConfig = priceRepository.findByMatchIdAndSectorId(
                     match.getId(),
                     seat.getSector().getId()
-            ).orElseThrow(() -> new TicketException("Prețul pentru sectorul " + seat.getSector().getName() + " nu este configurat!"));
+            ).orElseThrow(() -> new TicketException("Pretul pentru sectorul " + seat.getSector().getName() + " nu este configurat!"));
 
             // 4. Creăm biletul
             Ticket ticket = new Ticket();
@@ -146,5 +147,34 @@ public class TicketServiceImpl implements TicketService {
 
         ticket.setUsed(true);
         ticketRepository.save(ticket);
+    }
+    @Override
+    public MatchRevenueReportDTO getDetailedRevenueReport(Long matchId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new TicketException("Meciul nu există"));
+
+        List<Ticket> tickets = ticketRepository.findByMatchId(matchId);
+
+        // Calculăm totalul general
+        Double totalRevenue = tickets.stream()
+                .mapToDouble(Ticket::getFinalPrice)
+                .sum();
+
+        // Grupăm pe sectoare și calculăm suma + numărul de bilete per sector
+        List<MatchRevenueReportDTO.SectorRevenueDTO> sectorDetails = tickets.stream()
+                .collect(Collectors.groupingBy(
+                        t -> t.getSeat().getSector().getName(),
+                        Collectors.collectingAndThen(Collectors.toList(), list -> {
+                            double sum = list.stream().mapToDouble(Ticket::getFinalPrice).sum();
+                            return new MatchRevenueReportDTO.SectorRevenueDTO(
+                                    list.get(0).getSeat().getSector().getName(),
+                                    sum,
+                                    (long) list.size()
+                            );
+                        })
+                ))
+                .values().stream().toList();
+
+        return new MatchRevenueReportDTO(matchId, match.getOpponentName(), totalRevenue, sectorDetails);
     }
 }

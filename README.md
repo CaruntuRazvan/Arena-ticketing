@@ -18,8 +18,8 @@ Proiectul este structurat pe straturi (Layered Architecture):
 
 ## Funcționalități Implementate
 * **Gestiune Infrastructură:** Configurare stadioane, sectoare și locuri.
-* **Ciclu de Viață Meci: Gestionarea statusurilor meciurilor (Scheduled, Finished, Cancelled).
-* **Pricing Dinamic: Configurare prețuri diferențiate per sector pentru fiecare meci în parte
+* **Ciclu de Viață Meci:** Gestionarea statusurilor meciurilor (Scheduled, Finished, Cancelled).
+* **Pricing Dinamic:** Configurare prețuri diferențiate per sector pentru fiecare meci în parte
 * **Logica de Ticketing:**
     * Achiziție bilete cu verificarea automată a disponibilității locului.
     * Validări de preț bazate pe configurația specifică Meci-Sector.

@@ -2,6 +2,7 @@ package com.arena.ticketing.service;
 
 import com.arena.ticketing.dto.TicketListDTO;
 import com.arena.ticketing.dto.TicketRequestDTO;
+import com.arena.ticketing.dto.MatchRevenueReportDTO;
 import com.arena.ticketing.model.Ticket;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,4 +21,6 @@ public interface TicketService {
     Double getTotalRevenueByMatch(Long matchId);
 
     void validateTicket(String ticketCode);
+
+    MatchRevenueReportDTO getDetailedRevenueReport(Long matchId);
 }

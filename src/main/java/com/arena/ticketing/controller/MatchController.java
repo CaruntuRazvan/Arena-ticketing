@@ -27,21 +27,29 @@ public class MatchController {
 
     private final MatchService matchService;
 
+    @Operation(summary = "Listare toate meciurile",
+            description = "Returnează lista completă a meciurilor programate în sistem.")
     @GetMapping
     public ResponseEntity<List<Match>> getAllMatches() {
         return ResponseEntity.ok(matchService.getAllMatches());
     }
 
+    @Operation(summary = "Listare meciuri viitoare",
+            description = "Returnează lista meciurilor care urmează să aibă loc în viitor si nu au fost anulate.")
     @GetMapping("/upcoming")
     public ResponseEntity<List<Match>> getUpcomingMatches() {
         return ResponseEntity.ok(matchService.getUpcomingMatches());
     }
 
+    @Operation(summary = "Creare meci",
+            description = "Permite crearea unui nou meci în sistem.")
     @PostMapping
     public ResponseEntity<Match> createMatch(@Valid @RequestBody MatchRequestDTO dto) {
         return ResponseEntity.ok(matchService.createMatch(dto));
     }
 
+    @Operation(summary = "Setare prețuri meci",
+            description = "Permite setarea prețurilor pentru fiecare sector al unui meci.")
     @PostMapping("/prices")
     public ResponseEntity<String> setPrices(@Valid @RequestBody List<PriceRequestDTO> prices) {
         matchService.setMatchPrices(prices);
@@ -54,6 +62,8 @@ public class MatchController {
         return ResponseEntity.ok(matchService.getMatchStatistics(id));
     }
 
+    @Operation(summary = "Verifică disponibilitatea sectoarelor pentru un meci",
+            description = "Returnează starea de disponibilitate a fiecărui sector pentru un anumit meci.")
     @GetMapping("/{matchId}/sectors-availability")
     public ResponseEntity<List<SectorAvailabilityDTO>> getSectorsAvailability(@PathVariable Long matchId) {
         return ResponseEntity.ok(matchService.getSectorsAvailabilityForMatch(matchId));
