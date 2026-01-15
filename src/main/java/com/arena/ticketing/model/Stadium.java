@@ -23,8 +23,7 @@ public class Stadium {
 
     private String location;
 
-    // Relația cu Sectoarele
     @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL)
-    @JsonIgnore // deserialize to prevent circular reference
+    @JsonIgnore
     private List<Sector> sectors;
 }

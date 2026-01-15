@@ -132,7 +132,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public void validateTicket(String ticketCode) {
-        // Căutăm biletul după codul UUID, nu după ID-ul bazei de date
+        // cautam biletul dupa codul UUID
         Ticket ticket = ticketRepository.findByTicketCode(ticketCode)
                 .orElseThrow(() -> new TicketException("Cod invalid! Biletul nu există în sistem."));
 
@@ -160,7 +160,7 @@ public class TicketServiceImpl implements TicketService {
                 .mapToDouble(Ticket::getFinalPrice)
                 .sum();
 
-        // Grupăm pe sectoare și calculăm suma + numărul de bilete per sector
+        // grupare pe sectoare și calculare suma + numărul de bilete per sector
         List<MatchRevenueReportDTO.SectorRevenueDTO> sectorDetails = tickets.stream()
                 .collect(Collectors.groupingBy(
                         t -> t.getSeat().getSector().getName(),

@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface TicketService {
-    // Aceasta este metoda principală pe care o cere proiectul (Business Logic)
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     List<Ticket> buyTickets(TicketRequestDTO request);

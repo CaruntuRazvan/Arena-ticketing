@@ -24,14 +24,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    // Prinde și erorile de validare (cele cu @Valid)
+    // Prinde si erorile de validare (@Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> errors = new LinkedHashMap<>();
         errors.put("timestamp", LocalDateTime.now());
         errors.put("status", HttpStatus.BAD_REQUEST.value());
 
-        // Colectăm toate mesajele de eroare într-o listă
         List<String> details = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
